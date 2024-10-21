@@ -1,6 +1,5 @@
 mod parser;
 
-use std::fs;
 use crate::errhandle::{ParseError, ParseErrorKind};
 use parser::CompileInfo;
 
@@ -37,49 +36,11 @@ impl LogPareser {
         println!("The current directory is {}", self.cwd);
         println!("The input file is {}", &self.logfile);
         
-        let contents: String = fs::read_to_string(&self.logfile).unwrap();
+        let compileinfo = CompileInfo::new(&self.cwd, &self.compiler, & self.logfile);
 
-        let result: u8 = Self::search_gen_compdb(self, &contents);
-        match result {
-            1 => Err(ParseError::new(ParseErrorKind::InnerErr,
-                                    format!("generate error"))),
-            _ => Ok(())
-        }
+        compileinfo.write_to_json();
+
+        Ok(())
     }
 
-    #[allow(unused)]
-    fn search_gen_compdb(&self, contents: &str) -> u8 {
-        // 
-        let mut compinfo = CompileInfo::new();
-        let mut saveonce: u8 = 0;
-
-        compinfo.add_directory(&self.cwd);
-
-        for line in contents.lines() {
-            // search line include "cl2000"
-            //println!("Compiler is {}",&self.compiler);
-            if line.contains(&self.compiler) {
-                //
-                let splitedconts = line.split_whitespace();
-
-                if saveonce == 0 {
-                    //
-                    compinfo.add_compileinfo(splitedconts);
-                    saveonce = 1;
-                } else {
-                    //
-                    compinfo.add_srcfile(splitedconts.into_iter().last().unwrap());
-                }
-            }
-        }
-
-        if saveonce == 0 {
-            // Doesn't find any compile source.
-            return 1;
-        } else {
-            compinfo.write_to_json();
-            return 0;
-        }
-    }
 }
-
