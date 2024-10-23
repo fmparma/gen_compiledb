@@ -1,5 +1,5 @@
-use std::env;
 use gen_compiledb::compiledb::LogPareser;
+use std::env;
 
 fn main() {
     println!("Hello, world!");
@@ -8,9 +8,9 @@ fn main() {
     let input_args: Vec<String> = env::args().collect();
 
     let buildlog_parser = LogPareser::new(&cwd, &input_args).unwrap();
-    buildlog_parser.generate().unwrap_or_else(|err| {
-        println!("Error : {}", err)
-    });
+    buildlog_parser
+        .generate()
+        .unwrap_or_else(|err| println!("Error : {}", err));
     //let path1 = env::current_exe().unwrap();
 
     //println!("current dir: {}", path.display());

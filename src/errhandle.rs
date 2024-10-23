@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::fmt::{Display, Formatter, Debug};
+use std::fmt::{Debug, Display, Formatter};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ParseErrorKind {
@@ -37,14 +37,16 @@ pub struct ParseError {
 }
 
 impl ParseError {
-    pub fn new<E>(kind: ParseErrorKind, err: E) -> ParseError 
-        where E: Into<Box<dyn Error + Sync + Send>>{
+    pub fn new<E>(kind: ParseErrorKind, err: E) -> ParseError
+    where
+        E: Into<Box<dyn Error + Sync + Send>>,
+    {
         ParseError {
             kind,
             err: err.into(),
         }
     }
-    
+
     pub fn kind(&self) -> ParseErrorKind {
         self.kind
     }
