@@ -25,8 +25,17 @@ impl CompileInfo {
     }
 
     /// Extract compilation information
-    pub fn extract_buildinfo(cwd: &str, compilername: &str, logfile: &str) -> CompileInfo {
+    pub fn extract_buildinfo(
+        cwd: &str, 
+        compilername: &str, 
+        logfile: &str,
+        user_define: &str) -> CompileInfo {
+
         let mut buildinfo = Self::new(cwd);
+
+        if user_define.len() > 0 {
+            buildinfo.add_userdefine(user_define);
+        }
 
         let contents = fs::read_to_string(logfile).unwrap();
         let mut saveonce: u8 = 0;
@@ -53,6 +62,11 @@ impl CompileInfo {
     #[allow(unused)]
     fn add_directory(&mut self, directory: &str) {
         self.directory.push_str(directory);
+    }
+
+    #[allow(unused)]
+    fn add_userdefine(&mut self, user_define: &str) {
+        self.defines.push(user_define.to_string());
     }
 
     #[allow(unused)]
