@@ -103,8 +103,12 @@ impl CompileInfo {
                 self.compiler.push_str(cont);
             } else if cont.contains(include_pattern) {
                 // include path
+                let mut include_dir = cont.get(include_get_idx..)
+                                                  .unwrap().to_string();
+                include_dir = include_dir.replace("/", "\\");
+                include_dir = include_dir.replace(&self.directory, ".");
                 self.include_path
-                    .push(cont.get(include_get_idx..).unwrap().to_string());
+                    .push(include_dir);
             } else if cont.contains(define_pattern) {
                 // define parameter
                 self.defines
